@@ -1,0 +1,22 @@
+# Fully pinned runtime dependencies; generated from resolved environment.
+alembic==1.14.0
+annotated-doc==0.0.5
+annotated-types==0.8.0
+anyio==4.15.1
+click==8.5.0
+fastapi==0.135.2
+greenlet==3.1.1
+h11==0.16.0
+idna==3.20
+Mako==1.4.3
+MarkupSafe==3.0.4
+psycopg==3.2.3
+psycopg-binary==3.2.3
+pydantic==2.10.4
+pydantic_core==2.27.2
+python-multipart==0.0.20
+SQLAlchemy==2.0.36
+starlette==0.52.1
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+uvicorn==0.34.0

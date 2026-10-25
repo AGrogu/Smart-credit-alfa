@@ -1,0 +1,182 @@
+ Container smart-credit-qa-db-1 Running
+ Image smart-credit-qa-api-tests Building
+#1 [internal] load local bake definitions
+#1 reading from stdin 692B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile:
+#2 transferring dockerfile: 1.29kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:24.14.1-bookworm-slim
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/python:3.13.2-slim-bookworm
+#4 DONE 3.7s
+
+#3 [internal] load metadata for docker.io/library/node:24.14.1-bookworm-slim
+#3 DONE 7.4s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 228B done
+#5 DONE 0.0s
+
+#6 [frontend 1/6] FROM docker.io/library/node:24.14.1-bookworm-slim@sha256:b506e7321f176aae77317f99d67a24b272c1f09f1d10f1761f2773447d8da26c
+#6 resolve docker.io/library/node:24.14.1-bookworm-slim@sha256:b506e7321f176aae77317f99d67a24b272c1f09f1d10f1761f2773447d8da26c 0.0s done
+#6 DONE 0.0s
+
+#7 [runtime 1/8] FROM docker.io/library/python:3.13.2-slim-bookworm@sha256:6b3223eb4d93718828223966ad316909c39813dee3ee9395204940500792b740
+#7 resolve docker.io/library/python:3.13.2-slim-bookworm@sha256:6b3223eb4d93718828223966ad316909c39813dee3ee9395204940500792b740 0.0s done
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 195.56kB 0.0s done
+#8 DONE 0.0s
+
+#9 [runtime 4/8] RUN pip install --no-cache-dir -r /app/backend/requirements.lock
+#9 CACHED
+
+#10 [frontend 6/6] RUN npm run build
+#10 CACHED
+
+#11 [runtime 5/8] COPY backend /app/backend
+#11 DONE 0.0s
+
+#12 [runtime 6/8] COPY --from=frontend /build/frontend/dist /app/frontend/dist
+#12 DONE 0.0s
+
+#13 [runtime 7/8] RUN useradd --uid 10001 --create-home credit && mkdir -p /app/backend/data && chown -R credit:credit /app
+#13 DONE 0.1s
+
+#14 [runtime 8/8] WORKDIR /app/backend
+#14 DONE 0.0s
+
+#15 [runtime 8/8] WORKDIR /app/backend
+#15 CACHED
+
+#16 [runtime 5/8] COPY backend /app/backend
+#16 CACHED
+
+#17 [frontend 5/6] COPY frontend/ ./
+#17 CACHED
+
+#18 [frontend 6/6] RUN npm run build
+#18 CACHED
+
+#19 [frontend 2/6] WORKDIR /build/frontend
+#19 CACHED
+
+#20 [runtime 7/8] RUN useradd --uid 10001 --create-home credit && mkdir -p /app/backend/data && chown -R credit:credit /app
+#20 CACHED
+
+#21 [frontend 4/6] RUN npm ci --no-audit --no-fund
+#21 CACHED
+
+#22 [runtime 3/8] COPY backend/requirements.lock /app/backend/requirements.lock
+#22 CACHED
+
+#23 [runtime 4/8] RUN pip install --no-cache-dir -r /app/backend/requirements.lock
+#23 CACHED
+
+#24 [runtime 6/8] COPY --from=frontend /build/frontend/dist /app/frontend/dist
+#24 CACHED
+
+#25 [runtime 2/8] WORKDIR /app
+#25 CACHED
+
+#26 [frontend 3/6] COPY frontend/package.json frontend/package-lock.json ./
+#26 CACHED
+
+#27 [test 1/4] COPY tests /app/tests
+#27 DONE 0.0s
+
+#28 [test 2/4] COPY pyproject.toml /app/pyproject.toml
+#28 DONE 0.0s
+
+#29 [test 3/4] RUN pip install --no-cache-dir -r /app/backend/requirements-dev.lock && mkdir -p /app/work && chown -R credit:credit /app
+#29 1.096 Requirement already satisfied: alembic==1.14.0 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 2)) (1.14.0)
+#29 1.096 Requirement already satisfied: annotated-doc==0.0.5 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 3)) (0.0.5)
+#29 1.096 Requirement already satisfied: annotated-types==0.8.0 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 4)) (0.8.0)
+#29 1.097 Requirement already satisfied: anyio==4.15.1 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 5)) (4.15.1)
+#29 1.097 Requirement already satisfied: click==8.5.0 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 6)) (8.5.0)
+#29 1.097 Requirement already satisfied: fastapi==0.135.2 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 7)) (0.135.2)
+#29 1.097 Requirement already satisfied: greenlet==3.1.1 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 8)) (3.1.1)
+#29 1.098 Requirement already satisfied: h11==0.16.0 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 9)) (0.16.0)
+#29 1.098 Requirement already satisfied: idna==3.20 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 10)) (3.20)
+#29 1.098 Requirement already satisfied: Mako==1.4.3 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 11)) (1.4.3)
+#29 1.098 Requirement already satisfied: MarkupSafe==3.0.4 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 12)) (3.0.4)
+#29 1.099 Requirement already satisfied: psycopg==3.2.3 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 13)) (3.2.3)
+#29 1.099 Requirement already satisfied: psycopg-binary==3.2.3 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 14)) (3.2.3)
+#29 1.099 Requirement already satisfied: pydantic==2.10.4 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 15)) (2.10.4)
+#29 1.099 Requirement already satisfied: pydantic_core==2.27.2 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 16)) (2.27.2)
+#29 1.099 Requirement already satisfied: python-multipart==0.0.20 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 17)) (0.0.20)
+#29 1.100 Requirement already satisfied: SQLAlchemy==2.0.36 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 18)) (2.0.36)
+#29 1.100 Requirement already satisfied: starlette==0.52.1 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 19)) (0.52.1)
+#29 1.100 Requirement already satisfied: typing-inspection==0.4.4 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 20)) (0.4.4)
+#29 1.101 Requirement already satisfied: typing_extensions==4.16.0 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 21)) (4.16.0)
+#29 1.101 Requirement already satisfied: uvicorn==0.34.0 in /usr/local/lib/python3.13/site-packages (from -r /app/backend/requirements.lock (line 22)) (0.34.0)
+#29 8.396 Collecting certifi==2026.10.23 (from -r /app/backend/requirements-dev.lock (line 2))
+#29 23.57   WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='files.pythonhosted.org', port=443): Read timed out. (read timeout=15)")': /packages/32/d1/a3652fe2c19134d0d15922177821d863cbd7e842d53a21bbe7e8e3a1b5ac/certifi-2026.10.23-py3-none-any.whl.metadata
+#29 26.52   Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+#29 28.32 Collecting httpcore==1.0.9 (from -r /app/backend/requirements-dev.lock (line 3))
+#29 28.42   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#29 31.09 Collecting httpx==0.28.1 (from -r /app/backend/requirements-dev.lock (line 4))
+#29 31.22   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#29 32.57 Collecting iniconfig==2.3.1 (from -r /app/backend/requirements-dev.lock (line 5))
+#29 32.76   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+#29 35.41 Collecting packaging==26.3 (from -r /app/backend/requirements-dev.lock (line 6))
+#29 35.63   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+#29 37.45 Collecting pluggy==1.7.0 (from -r /app/backend/requirements-dev.lock (line 7))
+#29 37.55   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+#29 43.74 Collecting pytest==8.3.4 (from -r /app/backend/requirements-dev.lock (line 8))
+#29 44.02   Downloading pytest-8.3.4-py3-none-any.whl.metadata (7.5 kB)
+#29 83.11 Collecting ruff==0.9.1 (from -r /app/backend/requirements-dev.lock (line 9))
+#29 83.53   Downloading ruff-0.9.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl.metadata (25 kB)
+#29 83.87 Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+#29 84.20 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#29 84.60 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#29 84.73 Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+#29 84.91 Downloading packaging-26.3-py3-none-any.whl (129 kB)
+#29 85.07 Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+#29 85.28 Downloading pytest-8.3.4-py3-none-any.whl (343 kB)
+#29 85.68 Downloading ruff-0.9.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (10.9 MB)
+#29 90.90    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.9/10.9 MB 2.1 MB/s eta 0:00:00
+#29 90.94 Installing collected packages: ruff, pluggy, packaging, iniconfig, certifi, pytest, httpcore, httpx
+#29 91.26 Successfully installed certifi-2026.10.23 httpcore-1.0.9 httpx-0.28.1 iniconfig-2.3.1 packaging-26.3 pluggy-1.7.0 pytest-8.3.4 ruff-0.9.1
+#29 91.26 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#29 91.78
+#29 91.78 [notice] A new release of pip is available: 24.3.1 -> 26.2.2
+#29 91.78 [notice] To update, run: pip install --upgrade pip
+#29 DONE 91.9s
+
+#30 [test 4/4] WORKDIR /app
+#30 DONE 0.0s
+
+#31 exporting to image
+#31 exporting layers
+#31 exporting layers 0.7s done
+#31 exporting manifest sha256:1889e89fb8b347bf47647792a91e35393bbb283e72c679539faeae997023288f done
+#31 exporting config sha256:23b6a26a84a715368c3930d5bc17782efb972b4182dc9c549d1e3824e9f084ba done
+#31 exporting attestation manifest sha256:a380c703f476d97bbbdab3bcfec1bce7c984e8eede424ed38788b60244b42fb5 done
+#31 exporting manifest list sha256:e08009010fe73834680e3cc4642205f43ebbd67e14b667c1539c0c6bc7b30468 done
+#31 naming to docker.io/library/smart-credit-qa-api-tests:latest done
+#31 unpacking to docker.io/library/smart-credit-qa-api-tests:latest 0.2s done
+#31 DONE 0.9s
+
+#32 resolving provenance for metadata file
+#32 DONE 0.0s
+ Image smart-credit-qa-api-tests Built
+ Container smart-credit-qa-db-1 Waiting
+ Container smart-credit-qa-db-1 Healthy
+ Container smart-credit-qa-api-tests-run-787db113bdda Creating
+ Container smart-credit-qa-api-tests-run-787db113bdda Created
+........................................................................ [ 56%]
+.......................................................                  [100%]
+=============================== warnings summary ===============================
+../usr/local/lib/python3.13/site-packages/starlette/testclient.py:45
+  /usr/local/lib/python3.13/site-packages/starlette/testclient.py:45: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+127 passed, 1 warning in 42.99s

@@ -1,0 +1,20 @@
+ Container smart-credit-v2-final3-app-1 Restarting
+ Container smart-credit-v2-final3-db-1 Restarting
+ Container smart-credit-v2-final3-db-1 Started
+ Container smart-credit-v2-final3-app-1 Started
+{
+  "result": "PASS",
+  "contract_id": "contract:4adae046-97df-4a90-92f6-163ec8132be5",
+  "principal_kopecks": 60000000,
+  "available_kopecks": 40000000,
+  "reserved_kopecks": 0,
+  "document_sha256": "e73424c724eed08c3d9bfc1bf647b5c24607bdac9364e1908eb2ee45b04720cc",
+  "source_attempts": [
+    "FAILED_RETRYABLE",
+    "FAILED_RETRYABLE",
+    "SUCCEEDED"
+  ],
+  "session_survived": true,
+  "single_disbursement": true,
+  "application_versions": 1
+}

@@ -1,0 +1,11 @@
+export type Role = 'entrepreneur' | 'bank' | 'demo_admin';
+export interface User { id:string; email:string; name:string; role:Role; company_id:string|null }
+export interface Company { id:string; name:string; inn:string; registration_months:number; industry:string; revenue:string|null; expenses:string|null; monthly_debt:string|null }
+export interface Product { id:string; name:string; description:string; min_amount:string; max_amount:string; min_months:number; max_months:number; annual_rate:string; purpose:string }
+export interface Calculation { payment:string; total:string; overpayment:string; annual_rate:string }
+export interface DocumentFile { id:string; name:string; size:number; created_at:string }
+export interface Application { id:string; number:string; status:string; version:number; product_id:string; amount:string; months:number; purpose:string; revenue:string|null; expenses:string|null; monthly_debt:string|null; company_snapshot:Company; created_at:string; updated_at:string; calculation:Calculation; offer:(Calculation & {amount:string; months:number})|null; decision:{type:string;reason:string;source:string}|null; info_request:string|null; history:{status:string;actor:string;reason:string;created_at:string}[]; documents:DocumentFile[]; responses:{message:string;created_at:string}[]; disbursement:{reference:string;amount:string;created_at:string}|null; checks?:{name:string;status:string;detail:string;source:string;version:string}[]; risk?:{score:number;level:string;factors:{name:string;points:number;detail:string}[];version:string}|null; recommendation?:{type:string;reason:string;version:string}|null; notes?:{id:string;message:string;actor:string;created_at:string}[] }
+export interface Notification { id:string; application_id:string; message:string; created_at:string; read:boolean }
+export interface BankSummary { total:number; attention:number; approved:number; disbursed:number; requested_amount:string }
+export interface Audit { id:string;application_id:string;actor:string;action:string;reason:string;created_at:string }
+export type DraftFields = { product_id:string; amount:string; months:number; purpose:string; revenue:string|null; expenses:string|null; monthly_debt:string|null };

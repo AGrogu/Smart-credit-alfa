@@ -1,0 +1,23 @@
+# Shared implementation contract (v1)
+API prefix `/api`. Same-origin cookie sessions (HttpOnly, SameSite=Lax); login returns `csrf_token`, send `X-CSRF-Token` on all mutations after login. `/auth/me` restores user and csrf. Error `{detail: string | validation array}`. Monetary API values are rubles as decimal strings; accept strings/numbers via Decimal, round money 2 places. IDs string UUID. Dates ISO UTC. Bank-only internal risk, checks, notes must never appear in entrepreneur responses.
+
+- POST `/auth/login` {email,password} -> {user,csrf_token}; GET `/auth/me` same; POST `/auth/logout`.
+- User {id,email,name,role:'entrepreneur'|'bank',company_id:null|string}; GET `/company` -> {id,name,inn,registration_months,industry,revenue,expenses,monthly_debt}; PUT same accepts editable name/industry/revenue/expenses/monthly_debt, never registry/BKI identity.
+- GET `/products` -> array {id:'working'|'equipment',name,description,min_amount,max_amount,min_months,max_months,annual_rate,purpose}; POST `/calculate` {product_id,amount,months} -> {payment,total,overpayment,annual_rate}.
+- GET `/applications` -> array of application summaries (same shape as detail acceptable); bank query `status`,`product_id`,`attention`.
+- POST `/applications` {product_id,amount,months,purpose,revenue?,expenses?,monthly_debt?} creates draft with `Idempotency-Key` header (persist creation key in UI). No client-controlled scenario; company simulator fixtures are server-only.
+- GET `/applications/{id}` detail; PUT same draft fields plus `version` required.
+- POST `/applications/{id}/actions` {action,version,reason?,message?,amount?,months?,revenue?,expenses?,monthly_debt?}, header `Idempotency-Key`. Actions: submit,retry,respond,approve,reject,offer,request_info,accept,decline,sign,disburse,cancel. Decision reason required bank-side. respond uses message and optional updated financials. sign explicit demo consent in UI.
+- GET/POST `/applications/{id}/documents` multipart `file`; GET `/documents/{id}` download. Max 5 MiB, PDF/TXT/PNG/JPG signature validated, attachment disposition, server generated filename; ownership enforced.
+- POST `/applications/{id}/notes` {message}; bank-only.
+- GET `/notifications` -> [{id,application_id,message,created_at,read}]; POST `/notifications/{id}/read`.
+- GET `/bank/summary` -> {total,attention,approved,disbursed,requested_amount}; GET `/bank/audit` -> [{id,application_id,actor,action,reason,created_at}].
+- GET `/health/live`, `/health/ready`.
+
+Application response: {id,number,status,version,product_id,amount,months,purpose,revenue,expenses,monthly_debt,company_snapshot:{...},created_at,updated_at,calculation:{payment,total,overpayment,annual_rate},offer:null|{amount,months,annual_rate,payment,total,overpayment},decision:null|{type,reason,source:'automatic'|'manual'},info_request:null|string,history:[{status,actor,reason,created_at}],documents:[{id,name,size,created_at}],responses:[{message,created_at}],disbursement:null|{reference,amount,created_at}, [bank only]checks:array,risk:{score,level,factors:array,version},recommendation,notes:array}.
+
+Statuses: draft,submitted,checking,needs_info,scoring,manual_review,approved,rejected,alternative_offered,accepted,signed,disbursed,declined,cancelled,check_failed. Server processing synchronous in transaction; transient submitted/checking/scoring are retained in history. check_failed can retry. Requests version guarded with row locks / SQLite BEGIN IMMEDIATE; idempotency keys enforce replay. All durable in DB. Server exposes synchronous process result immediately. UI refreshes on action and 10s polling, no client fake transitions.
+
+Seed demo accounts (password `Demo2026!`): good@demo.local, risk@demo.local, info@demo.local, review@demo.local, offer@demo.local, retry@demo.local; bank@demo.local. Six company-owned starter drafts with valid synthetic TXT documents. User can also create new application from blank UI. Default new good values: working, 500000,12,purpose='Пополнение запасов',revenue=1000000,expenses=600000,monthly_debt=20000. info fixture starter draft revenue=null -> needs_info; client responds with revenue. review age=8 months -> manual; risk BKI overdue immutable -> reject; offer requested 4500000 -> reduced offer; retry first simulator attempt fails -> check_failed then succeeds. Company profile registry identity immutable; snapshots frozen at submit.
+
+Frontend owns frontend/** only. Backend owns backend/** only. Root owns infrastructure, tests and integration. Docs reviewer owns docs/** except API_CONTRACT.md plus README.md and THIRD_PARTY_NOTICES. Communicate changes before diverging.

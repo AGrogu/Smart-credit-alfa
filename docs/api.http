@@ -1,0 +1,188 @@
+# Коллекция для REST Client / HTTP-клиента с cookie jar.
+# Запросы выполняются последовательно; после login скопируйте csrf_token,
+# после создания — id и version. Cookie сессии сохраняет HTTP-клиент.
+# И Docker, и scripts/dev.sh предоставляют same-origin приложение на 8080.
+@base = http://127.0.0.1:8080/api
+@csrf = paste_csrf_token_here
+@application = paste_application_uuid_here
+@document = paste_document_uuid_here
+@notification = paste_notification_uuid_here
+@version = 1
+
+### Проверка готовности
+GET {{base}}/health/ready
+
+### Локальный вход предпринимателя
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{"email":"good@demo.local","password":"Demo2026!"}
+
+### Восстановить текущего пользователя и CSRF
+GET {{base}}/auth/me
+
+### Два продукта и серверные ограничения
+GET {{base}}/products
+
+### Предварительный расчет
+POST {{base}}/calculate
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+
+{"product_id":"working","amount":"500000.00","months":12}
+
+### Профиль своей компании
+GET {{base}}/company
+
+### Создать новый черновик; повтор с тем же ключом и телом безопасен
+# Для другой заявки используйте НОВЫЙ Idempotency-Key.
+POST {{base}}/applications
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-create-001
+
+{"product_id":"working","amount":"500000.00","months":12,"purpose":"Пополнение запасов","revenue":"1000000.00","expenses":"600000.00","monthly_debt":"20000.00"}
+
+### Список собственных заявок
+GET {{base}}/applications
+
+### Карточка: сохраните актуальное поле version перед изменениями
+GET {{base}}/applications/{{application}}
+
+### Изменить черновик; version берется из последнего GET
+PUT {{base}}/applications/{{application}}
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+
+{"product_id":"working","amount":"500000.00","months":12,"purpose":"Пополнение запасов","revenue":"1000000.00","expenses":"600000.00","monthly_debt":"20000.00","version":{{version}}}
+
+### Загрузить синтетический документ (multipart)
+POST {{base}}/applications/{{application}}/documents
+X-CSRF-Token: {{csrf}}
+Content-Type: multipart/form-data; boundary=DemoBoundary
+
+--DemoBoundary
+Content-Disposition: form-data; name="file"; filename="financial-demo.txt"
+Content-Type: text/plain
+
+Синтетический отчет: выручка 1 000 000 рублей, расходы 600 000 рублей.
+--DemoBoundary--
+
+### Документы заявки
+GET {{base}}/applications/{{application}}/documents
+
+### Скачать документ (требуется сессия владельца или банка)
+GET {{base}}/documents/{{document}}
+
+### Отправить заявку; version ОБНОВИТЬ после загрузки/изменения
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-submit-001
+
+{"action":"submit","version":{{version}}}
+
+### Ответ на уточнение (только needs_info)
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-respond-001
+
+{"action":"respond","version":{{version}},"message":"Уточнены финансовые данные по синтетическому отчету","revenue":"1000000.00","expenses":"600000.00","monthly_debt":"20000.00"}
+
+### Повторить сбой проверки (только check_failed)
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-retry-001
+
+{"action":"retry","version":{{version}}}
+
+### Принять условия (approved или alternative_offered)
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-accept-001
+
+{"action":"accept","version":{{version}}}
+
+### Демонстрационное подписание (accepted)
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-sign-001
+
+{"action":"sign","version":{{version}}}
+
+### Смоделированная выдача (signed); реальные деньги не переводятся
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-disburse-001
+
+{"action":"disburse","version":{{version}}}
+
+### Внутренние уведомления
+GET {{base}}/notifications
+
+### Отметить уведомление прочитанным
+POST {{base}}/notifications/{{notification}}/read
+X-CSRF-Token: {{csrf}}
+
+### Выход
+POST {{base}}/auth/logout
+X-CSRF-Token: {{csrf}}
+
+### Вход сотрудника; ЗАМЕНИТЕ csrf после входа
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{"email":"bank@demo.local","password":"Demo2026!"}
+
+### Банковская очередь с фильтрами
+GET {{base}}/applications?status=manual_review&product_id=working&attention=true
+
+### Банковская сводка по данным приложения
+GET {{base}}/bank/summary
+
+### Внутренняя заметка; не видна предпринимателю
+POST {{base}}/applications/{{application}}/notes
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+
+{"message":"Ручная проверка синтетического денежного потока выполнена"}
+
+### Запрос дополнительных сведений
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-bank-info-001
+
+{"action":"request_info","version":{{version}},"reason":"Для решения нужны сведения о выручке","message":"Уточните среднемесячную выручку и приложите синтетический отчет"}
+
+### Ручное одобрение (manual_review)
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-bank-approve-001
+
+{"action":"approve","version":{{version}},"reason":"Денежного потока достаточно; повышенный риск короткой истории бизнеса принят сотрудником в демонстрации"}
+
+### Альтернативное предложение
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-bank-offer-001
+
+{"action":"offer","version":{{version}},"reason":"Снижение запрашиваемой нагрузки","amount":"300000.00","months":18}
+
+### Ручной отказ
+POST {{base}}/applications/{{application}}/actions
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: http-demo-bank-reject-001
+
+{"action":"reject","version":{{version}},"reason":"Подтвержденного денежного потока недостаточно для предложенных условий"}
+
+### Аудит значимых действий
+GET {{base}}/bank/audit

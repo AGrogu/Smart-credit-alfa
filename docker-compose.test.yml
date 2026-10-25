@@ -1,0 +1,29 @@
+services:
+  app:
+    environment:
+      LOGIN_IP_LIMIT: "10000"
+      LOGIN_ACCOUNT_LIMIT: "1000"
+  e2e:
+    build:
+      context: .
+      dockerfile: Dockerfile.e2e
+    profiles: [test]
+    network_mode: service:app
+    environment:
+      E2E_BASE_URL: http://localhost:8080
+    depends_on:
+      app:
+        condition: service_healthy
+    volumes:
+      - ./work/docker-e2e:/repo/work
+      - ./docs/screenshots:/repo/docs/screenshots
+  api-tests:
+    build:
+      context: .
+      target: test
+    profiles: [test]
+    environment:
+      TEST_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-credit}:${POSTGRES_PASSWORD:-local_demo_only}@db:5432/credit_qa
+    depends_on:
+      db:
+        condition: service_healthy

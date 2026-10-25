@@ -1,0 +1,31 @@
+........................................................................ [ 56%]
+.......................................................                  [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:45
+  <local-workspace> DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+127 passed, 1 warning in 42.59s
+All checks passed!
+
+> smart-credit-frontend@1.0.0 typecheck
+> tsc --noEmit -p tsconfig.app.json
+
+
+> smart-credit-frontend@1.0.0 lint
+> eslint src
+
+
+> smart-credit-frontend@1.0.0 build
+> tsc -b && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 38 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.61 kB │ gzip:   0.41 kB
+dist/assets/index-BEHfMoGJ.css   63.09 kB │ gzip:  13.81 kB
+dist/assets/index-D--gVKQH.js   347.70 kB │ gzip: 102.30 kB
+✓ built in 479ms

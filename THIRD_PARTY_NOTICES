@@ -1,0 +1,54 @@
+# Third-party components and synthetic integrations
+
+This project is a locally runnable educational hackathon prototype. It contains no external LLM, purchased dataset, telemetry, real banking integration or CDN dependency at runtime.
+
+## Main components
+
+| Component | Purpose | License | Source |
+|---|---|---|---|
+| Python 3.13 | Backend runtime | PSF | https://www.python.org/ |
+| FastAPI | HTTP API and validation integration | MIT | https://github.com/fastapi/fastapi |
+| Starlette | ASGI HTTP layer | BSD-3-Clause | https://github.com/Kludex/starlette |
+| Uvicorn | ASGI server | BSD-3-Clause | https://github.com/encode/uvicorn |
+| Pydantic / pydantic-core | Request validation | MIT | https://github.com/pydantic/pydantic |
+| SQLAlchemy | ORM and transactions | MIT | https://github.com/sqlalchemy/sqlalchemy |
+| Alembic | Database migrations | MIT | https://github.com/sqlalchemy/alembic |
+| Psycopg / psycopg-binary | PostgreSQL driver | LGPL-3.0 (driver), bundled-library notices apply | https://www.psycopg.org/ |
+| PostgreSQL 17 | Durable database | PostgreSQL License | https://www.postgresql.org/about/licence/ |
+| python-multipart | Multipart uploads | Apache-2.0 | https://github.com/Kludex/python-multipart |
+| swagger-ui-dist / Swagger UI 5 | Locally hosted OpenAPI 3.1 explorer | Apache-2.0 | https://github.com/swagger-api/swagger-ui |
+| Node.js 24 | Frontend build runtime | MIT and bundled notices | https://nodejs.org/ |
+| React / React DOM | Web interface | MIT | https://github.com/facebook/react |
+| TypeScript | Static type checking | Apache-2.0 | https://github.com/microsoft/TypeScript |
+| Vite / plugin-react | Local build tooling | MIT | https://github.com/vitejs/vite |
+| ESLint and plugins | Source linting | MIT | https://github.com/eslint/eslint |
+| pytest | Backend tests | MIT | https://github.com/pytest-dev/pytest |
+| HTTPX | API integration tests | BSD-3-Clause | https://github.com/encode/httpx |
+| Ruff | Backend linting and formatting | MIT | https://github.com/astral-sh/ruff |
+| Playwright / Chromium | Browser tests | Apache-2.0 / BSD and Chromium third-party notices | https://github.com/microsoft/playwright / https://www.chromium.org/ |
+| Docker images: node, python, postgres, Playwright | Reproducible local build/test environments | Respective upstream and OS component licenses | https://hub.docker.com/_/node / https://hub.docker.com/_/python / https://hub.docker.com/_/postgres / https://playwright.dev/docs/docker |
+
+Swagger UI 5.34.0 is vendored under backend/app/static/swagger-ui with its LICENSE, NOTICE and bundle license notices. Package integrity and asset SHA-256 are recorded in docs/SWAGGER_PROVENANCE.json. No Swagger npm installer or Scarf dependency is included. A prior installation-time analytics uncertainty is disclosed in docs/SECURITY.md.
+
+Exact resolved package versions are in backend/requirements.lock, backend/requirements-dev.lock and frontend/package-lock.json. Installed package metadata and license files remain part of the distributions in the environment. Transitive package inventory is in docs/DEPENDENCIES.json; license references in metadata supplement, and do not replace, full upstream license terms.
+
+## Simulated systems and data provenance
+
+- State registration / active company status: deterministic local fixtures attached to synthetic companies.
+- Credit bureau: immutable server-side overdue and one-time failure fixtures; no external inquiry.
+- Completeness checks: local application and document validation.
+- Credit scoring / decision policy: original educational deterministic rules (demo-v1), not a validated credit model or Alfa-Bank internal policy.
+- Signature: user-confirmed status transition with explicit demo consent, no legal electronic signature.
+- Disbursement: single transactional synthetic reference, no payment network or money transfer.
+- Companies, users, company identifiers, financial values and sample TXT documents: authored synthetic fixtures, no sourced personal or credit records.
+- No model weights, AI API, external dataset, stock photo, remote web font or image service is included. Icons and abstract CSS illustrations are project code.
+- Alfa-Bank and case names identify the supplied hackathon task only. Branding does not imply bank endorsement or real product terms. The case PDF was supplied by the user for requirements analysis and is not redistributed in this repository.
+
+Credit-cycle update (2026-10-25): DEMO_POLICY_1, DEMO_TERM_LOAN_V1,
+DEMO_REVOLVING_V1, twelve organization fixtures, source/document manifests,
+synthetic clock/accounts/transactions and signing simulations are project-authored
+educational implementations of the user-supplied MVP specification. They are not
+Alfa Bank tariffs, internal systems, validated risk models or real customer data.
+User-supplied research and specification are retained under docs/sources as task
+inputs; their source references and access limitations remain in those documents.
+No new external model, paid API or runtime network integration was added.

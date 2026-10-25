@@ -1,0 +1,144 @@
+ Image smart-credit-v2-final3-app Building
+#1 [internal] load local bake definitions
+#1 reading from stdin 685B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.29kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:24.14.1-bookworm-slim
+#3 DONE 0.7s
+
+#4 [internal] load metadata for docker.io/library/python:3.13.2-slim-bookworm
+#4 DONE 1.4s
+
+#5 [frontend 1/6] FROM docker.io/library/node:24.14.1-bookworm-slim@sha256:b506e7321f176aae77317f99d67a24b272c1f09f1d10f1761f2773447d8da26c
+#5 resolve docker.io/library/node:24.14.1-bookworm-slim@sha256:b506e7321f176aae77317f99d67a24b272c1f09f1d10f1761f2773447d8da26c 0.0s done
+#5 DONE 0.0s
+
+#6 [runtime 1/8] FROM docker.io/library/python:3.13.2-slim-bookworm@sha256:6b3223eb4d93718828223966ad316909c39813dee3ee9395204940500792b740
+#6 resolve docker.io/library/python:3.13.2-slim-bookworm@sha256:6b3223eb4d93718828223966ad316909c39813dee3ee9395204940500792b740 0.0s done
+#6 DONE 0.0s
+
+#7 [runtime 4/8] RUN pip install --no-cache-dir -r /app/backend/requirements.lock
+#7 CACHED
+
+#8 [frontend 6/6] RUN npm run build
+#8 CACHED
+
+#9 [runtime 5/8] COPY backend /app/backend
+#9 DONE 0.0s
+
+#10 [runtime 6/8] COPY --from=frontend /build/frontend/dist /app/frontend/dist
+#10 DONE 0.0s
+
+#11 [runtime 7/8] RUN useradd --uid 10001 --create-home credit && mkdir -p /app/backend/data && chown -R credit:credit /app
+#11 DONE 0.1s
+
+#12 [runtime 8/8] WORKDIR /app/backend
+#12 DONE 0.0s
+
+#13 [internal] load .dockerignore
+#13 transferring context: 228B done
+#13 DONE 0.0s
+
+#14 [internal] load build context
+#14 transferring context: 2.90kB done
+#14 DONE 0.0s
+
+#15 exporting to image
+#15 exporting layers done
+#15 exporting manifest sha256:aa0256f2053b8a9fe446d8190c8b5a7ca207303bd529d10e31c9bb0355e8273d done
+#15 exporting config sha256:f57e2aea9f07411ef9481bfe407604cfb06237267be873394c95e3f958307ab7 done
+#15 exporting attestation manifest sha256:c6dfebe77472350e4d70a2aa2a80d925f673c3864c61e577409e04146e4091fd done
+#15 exporting manifest list sha256:e590d511e5a41be9acf4f77206369dcec6cc397ab225eb6f6a702b10ad3e4ea3 done
+#15 naming to docker.io/library/smart-credit-v2-final3-app:latest done
+#15 unpacking to docker.io/library/smart-credit-v2-final3-app:latest done
+#15 DONE 0.0s
+
+#16 resolving provenance for metadata file
+#16 DONE 0.0s
+ Image smart-credit-v2-final3-app Built
+ Container smart-credit-v2-final3-app-1 Running
+ Container smart-credit-v2-final3-db-1 Running
+ Container smart-credit-v2-final3-db-1 Waiting
+ Container smart-credit-v2-final3-db-1 Healthy
+ Image smart-credit-v2-final3-e2e Building
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.25kB done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile.e2e
+#2 transferring dockerfile: 387B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for mcr.microsoft.com/playwright:v1.64.1-noble
+#3 DONE 0.8s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 228B done
+#4 DONE 0.0s
+
+#5 [1/7] FROM mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+#5 resolve mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 303B done
+#6 DONE 0.0s
+
+#7 [3/7] COPY frontend/package.json frontend/package-lock.json ./
+#7 CACHED
+
+#8 [5/7] COPY frontend/playwright.config.ts ./
+#8 CACHED
+
+#9 [6/7] COPY frontend/e2e ./e2e
+#9 CACHED
+
+#10 [2/7] WORKDIR /repo/frontend
+#10 CACHED
+
+#11 [4/7] RUN npm ci --no-audit --no-fund
+#11 CACHED
+
+#12 [7/7] RUN mkdir -p /repo/docs/screenshots /repo/work
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 exporting manifest sha256:bdd888eac61d9fcb5542e39e09de8b7d3ac5ea76377c00355a463556cfad80bb done
+#13 exporting config sha256:15bdce72ebd82693426fe8b04a1a333015a50ff09c728bfbbe5f3c5f8a9411ae done
+#13 exporting attestation manifest sha256:bd60d8f44e99759caed77f3c3f582ae2c5bcf17b74b18fed81ccadedc974089a done
+#13 exporting manifest list sha256:9c1d153b68fd4ad20f111bfd46ed2f08cb44f39f3642c6d2b6220827e6e6440e done
+#13 naming to docker.io/library/smart-credit-v2-final3-e2e:latest done
+#13 unpacking to docker.io/library/smart-credit-v2-final3-e2e:latest done
+#13 DONE 0.0s
+
+#14 resolving provenance for metadata file
+#14 DONE 0.0s
+ Image smart-credit-v2-final3-e2e Built
+ Container smart-credit-v2-final3-app-1 Waiting
+ Container smart-credit-v2-final3-app-1 Healthy
+ Container smart-credit-v2-final3-e2e-run-0ff729f4b608 Creating
+ Container smart-credit-v2-final3-e2e-run-0ff729f4b608 Created
+
+Running 14 tests using 1 worker
+
+  ✓   1 e2e/credit-cycle.spec.ts:11:1 › v2: разовый кредит от анкеты до графика и единственной выдачи (6.5s)
+  ✓   2 e2e/credit-cycle.spec.ts:12:1 › v2: ВКЛ, нулевой долг, транш и восстановление части лимита (9.7s)
+  ✓   3 e2e/credit-cycle.spec.ts:13:1 › v2: подготовитель видит форму, но не отправляет и не дает согласия (470ms)
+  ✓   4 e2e/workflows.spec.ts:63:1 › новая заявка, восстановление черновика, документ, выдача и история (1.7s)
+  ✓   5 e2e/workflows.spec.ts:77:1 › неизменяемая кредитная история даёт отказ (941ms)
+  ✓   6 e2e/workflows.spec.ts:83:1 › неполные сведения, ответ предпринимателя и продолжение (1.1s)
+  ✓   7 e2e/workflows.spec.ts:91:1 › альтернативная сумма, принятие, подписание и демо-выдача (1.2s)
+  ✓   8 e2e/workflows.spec.ts:97:1 › сбой локального источника и успешная повторная проверка (1.0s)
+  ✓   9 e2e/workflows.spec.ts:103:1 › банк: фильтры, проверки, заметка, уточнение и окончательное решение (2.5s)
+  ✓  10 e2e/workflows.spec.ts:136:1 › калькулятор, оборудование, валидация и профиль (1.4s)
+  ✓  11 e2e/workflows.spec.ts:151:1 › узкий экран, клавиатура и локальная документация API (1.1s)
+  ✓  12 e2e/workflows.spec.ts:168:1 › потерянный ответ создания восстанавливает точный запрос без дубля (1.5s)
+  ✓  13 e2e/workflows.spec.ts:189:1 › запоздалое обновление компании не попадает в другую сессию (10.7s)
+  ✓  14 e2e/workflows.spec.ts:212:1 › оборудование: новая заявка и отклонение условий клиентом (1.1s)
+
+  14 passed (41.3s)

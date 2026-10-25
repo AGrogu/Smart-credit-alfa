@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/playwright:v1.64.1-noble
+ENV SCARF_ANALYTICS=false DO_NOT_TRACK=1
+WORKDIR /repo/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY frontend/playwright.config.ts ./
+COPY frontend/e2e ./e2e
+RUN mkdir -p /repo/docs/screenshots /repo/work
+CMD ["npx", "playwright", "test"]

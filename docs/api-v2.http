@@ -1,0 +1,100 @@
+@base = http://127.0.0.1:8080
+@csrf = COPY_CSRF_FROM_LOGIN
+@appId = COPY_APPLICATION_ID
+@revision = 1
+@offerId = COPY_CURRENT_OFFER_ID
+@offerHash = COPY_CURRENT_OFFER_HASH
+@bundleHash = COPY_ACCEPTED_BUNDLE_HASH
+@contractId = COPY_CONTRACT_ID
+@quoteId = COPY_QUOTE_ID
+
+### 1. Login; the HTTP client must keep the session cookie.
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{"email":"good@demo.local","password":"Demo2026!"}
+
+### 2. Organization, templates, live versions and clock.
+GET {{base}}/api/v2/workspace?organization_id=demo-org-a
+
+### 3. Only on a clean demo organization / when no unfinished submitted application exists.
+POST {{base}}/api/v2/applications
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: example-draft-unique-001
+
+{"organization_id":"demo-org-a","template_id":"FIX-A"}
+
+### 4. Confirm synthetic forecast. Copy current revision after every successful command.
+PUT {{base}}/api/v2/applications/{{appId}}
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: example-edit-unique-001
+If-Match: {{revision}}
+
+{"expected_version":{{revision}},"input":{"product_code":"DEMO_TERM_LOAN_V1","amount_kopecks":200000000,"term_months":12,"financials_confirmed":true}}
+
+### 5. Separate processing consent.
+POST {{base}}/api/v2/applications/{{appId}}/commands
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: example-processing-consent-001
+
+{"action":"consent","expected_version":{{revision}},"purpose":"DATA_PROCESSING","confirmed":true}
+
+### 6. Separate credit-history consent.
+POST {{base}}/api/v2/applications/{{appId}}/commands
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: example-history-consent-001
+
+{"action":"consent","expected_version":{{revision}},"purpose":"CREDIT_HISTORY","confirmed":true}
+
+### 7. Submit. Repeating this exact key/body returns the original receipt.
+POST {{base}}/api/v2/applications/{{appId}}/commands
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: example-submit-001
+
+{"action":"submit","expected_version":{{revision}}}
+
+### 8. Poll persisted state; no external bank request is sent.
+GET {{base}}/api/v2/applications/{{appId}}
+
+### 9. Explicit acceptance of current version/hash.
+POST {{base}}/api/v2/applications/{{appId}}/commands
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: example-accept-001
+
+{"action":"accept","expected_version":{{revision}},"offer_id":"{{offerId}}","offer_hash":"{{offerHash}}","confirmed":true}
+
+### 10. Review documents before simulated signing.
+GET {{base}}/api/v2/applications/{{appId}}/bundle
+
+### 11. Simulation only. The persisted worker automatically executes once.
+POST {{base}}/api/v2/applications/{{appId}}/commands
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: example-sign-001
+
+{"action":"sign","expected_version":{{revision}},"bundle_hash":"{{bundleHash}}","confirmed":true}
+
+### 12. Schedule / debt / synthetic account.
+GET {{base}}/api/v2/contracts/{{contractId}}
+
+### 13. Only once the first payment date is reached through authorized demo clock.
+POST {{base}}/api/v2/contracts/{{contractId}}/commands
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: example-pay-preview-001
+
+{"action":"pay_preview","expected_version":{{revision}}}
+
+### 14. Quote confirmation; must have current clock and contract revisions.
+POST {{base}}/api/v2/contracts/{{contractId}}/commands
+Content-Type: application/json
+X-CSRF-Token: {{csrf}}
+Idempotency-Key: example-payment-001
+
+{"action":"pay","expected_version":{{revision}},"quote_id":"{{quoteId}}","confirmed":true}

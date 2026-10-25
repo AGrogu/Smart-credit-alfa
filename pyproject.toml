@@ -1,0 +1,9 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["backend"]
+addopts = "-ra"
+[tool.ruff]
+target-version = "py313"
+line-length = 140
+[tool.ruff.lint]
+select = ["F", "E9"]
